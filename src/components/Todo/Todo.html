@@ -1,0 +1,35 @@
+<Page class="page">
+  <ActionBar title="Simple Todo App" class="action-bar" />
+  <ScrollView>
+    <TabView height="100%">
+      <TabViewItem title="To do(s)">
+        <StackLayout class="home-panel">
+          <TextField width="80%" v-model="search" hint="Search" />
+          <Button width="20%" :text="showForm ? '-' : '+'" @tap="showForm = !showForm" backgroundColor="orange" />
+          <WrapLayout orientation="horizontal" itemWidth="auto" itemHeight="auto" v-if="showForm">
+            <TextField width="80%" v-model="todo" hint="Enter new todo" @returnPress="addTodo" />
+            <Button width="20%" text="Add" @tap="addTodo" backgroundColor="orange" />
+          </WrapLayout>
+          <ListView class="list-group" for="todo in activeTodos">
+            <v-template>
+              <FlexboxLayout flexDirection="row" class="list-group-item" @longPress="options(todo)">
+                <Label :text="todo" class="list-group-item-heading" style="width: 60%" />
+              </FlexboxLayout>
+            </v-template>
+          </ListView>
+        </StackLayout>
+      </TabViewItem>
+      <TabViewItem title="Completed">
+        <StackLayout class="home-panel">
+          <ListView class="list-group" for="todo in completedTodos">
+            <v-template>
+              <FlexboxLayout flexDirection="row" class="list-group-item" @longPress="reversal(todo)" >
+                <Label :text="todo" class="list-group-item-heading" style="width: 60%" />
+              </FlexboxLayout>
+            </v-template>
+          </ListView>
+        </StackLayout>
+      </TabViewItem>
+    </TabView>
+  </ScrollView>
+</Page>
