@@ -2,6 +2,7 @@
   <page>
     <stack-layout class="home-panel">
       <button class="m-30" width="50%" text="Open Todo App" @tap="openTodo" backgroundColor="orange" />
+      <Image src="~/images/NativeScript-Vue.png" stretch="none" />
     </stack-layout>
   </page>
 </template>

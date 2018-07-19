@@ -5,86 +5,115 @@
     name: 'Todo',
     data() {
       return {
+        loader: {
+          loading: false
+        },
         showForm: false,
-        todos: [],
-        completedTodos: ['Done'],
         todo: "",
         search: "",
+        la: {
+          circle: this.parseFont('f18a'),
+          check: this.parseFont('f17b')
+        } 
       }
     },
     computed: {
       activeTodos () {
+        let todos = this.$store.getters.incompleteTodos;
         if (!this.search) {
-          return this.todos
+          return todos;
+        } else {
+          return todos.filter(todo => {
+            return todo.name.toLowerCase().includes(this.search.toLowerCase())
+        })
         }
-        return this.todos.filter(todo => {
-          return todo.toLowerCase().includes(this.search.toLowerCase())
+      },
+      completedTodos () {
+        if (!this.search) {
+          return this.$store.getters.completedTodos;
+        }
+        return this.$store.getters.completedTodos.filter(todo => {
+          return todo.name.toLowerCase().includes(this.search.toLowerCase())
         })
       }
     },
     created () {
-      this.$store.dispatch('fetch').then(result => {
-        console.log('From Todo component', result);
-        this.todos = this.$store.state.collections;
-      });
+      this.refresh();
     },
     methods: {
       refresh () {
-        this.todos = this.$store.state.collections;
-      },
-      addTodo() {
-        this.todos.unshift(this.todo);
-        this.$store.dispatch('insert', this.todo).then(() => {
-          this.todos = this.$store.state.collections;
+        this.$store.dispatch('fetch').then(result => {
+          // this.todos = this.$store.getters.incompleteTodos;
+          console.log('Incomplete Todos from getters', this.$store.getters.incompleteTodos);
         });
       },
+      addTodo() {
+        // this.todos.unshift(this.todo);
+        this.$store.dispatch('insert', this.todo).then(() => {
+        this.refresh();
+        });
+        this.todo = '';
+      },
       options(args) {
-        const itemIndex = this.todos.indexOf(args);
-        action('What do you want to do with this To Do?', 'Cancel', ['Mark complete', 'Delete'])
+        action(args.name, 'Cancel', ['Mark complete', 'Delete'])
             .then(result => {
               switch (result) {
                 case 'Mark complete':
-                  this.markComplete(args, itemIndex);
+                  this.markComplete(args);
                   break;
                 case 'Delete':
-                  this.deleteTodo(this.todos, itemIndex);
+                  this.deleteTodo(args);
                   break;
                 case 'Cancel' || undefined: // Dismisses the dialog.
                   break;
               }
             })
       },
-      markComplete(todo, index) {
-        this.completedTodos.unshift(todo);
-        this.todos.splice(index, 1);
-      },
-      markIncomplete(todo, index) {
-        this.todos.unshift(todo);
-        this.completedTodos.splice(index, 1);
-      },
-      deleteTodo(todos, index) {
-        todos.splice(index, 1)
-      },
       reversal (args) {
-        const itemIndex = this.completedTodos.indexOf(args);
-        action('What do you want to do with this To Do?', 'Cancel', ['Mark as incomplete', 'Delete'])
+        action(args.name, 'Cancel', ['Mark as incomplete', 'Delete'])
             .then(result => {
               switch (result) {
                 case 'Mark as incomplete':
-                  this.markIncomplete(args, itemIndex);
+                  this.markIncomplete(args);
                   break;
                 case 'Delete':
-                  this.deleteTodo(this.completedTodos, itemIndex);
+                  this.deleteTodo(args);
                   break;
                 case 'Cancel' || undefined: // Dismisses the dialog.
                   break;
               }
             })
+      },
+      markComplete(todo) {
+        todo['action'] = 1;
+        this.$store.dispatch('update', todo);
+        this.refresh();
+      },
+      markIncomplete(todo) {
+        todo['action'] = 0;
+        this.$store.dispatch('update', todo);
+        this.refresh();
+      },
+      deleteTodo(todo) {
+        console.log(todo);
+        this.$store.dispatch('deleteRecord', todo);
+        this.refresh();
+      },
+      parseFont(code) {
+        return String.fromCharCode(parseInt(code, 16));
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .icon {
+    font-size: 30;
+  }
+  .icomoon {
+    font-family: 'icomoon';
+  }
+  .line-awesome {
+    font-family: 'line-awesome';
+  }
 </style>

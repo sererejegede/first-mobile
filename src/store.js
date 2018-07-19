@@ -7,17 +7,17 @@ Vue.use(Vuex);
 const Store = new Vuex.Store({
   state: {
     database: null,
-    collections: []
+    todos: []
   },
   mutations: {
     init(state, data) {
       state.database = data.database
     },
     fetch(state, data) {
-      state.collections = data;
+      state.todos = data;
     },
     save(state, data) {
-      state.collections.push(data);
+      state.todos.push(data);
     }
   },
   actions: {
@@ -46,6 +46,14 @@ const Store = new Vuex.Store({
       })
     },
 
+    update(store, data) {
+      store.state.database.execSQL('UPDATE todos SET status = ? WHERE id = ?', [data.action, data.id]).then(response => {
+        console.log('Update response', response);
+      }, error => {
+        console.log('Update error', error);
+      })
+    },
+
     fetch(store) {
       store.state.database.all('SELECT * FROM todos', []).then(results => {
         let refinedResult = [];
@@ -63,11 +71,26 @@ const Store = new Vuex.Store({
       })
     },
 
-    deleteRecord(store) {
-
+    deleteRecord(store, data) {
+      store.state.database.execSQL('DELETE FROM todos WHERE id = ?', [data.id]).then(response => {
+        console.log('Delete response', response);
+      }, error => {
+        console.log('Delete error', error);
+      })
     }
   },
-  getters: {}
+  getters: {
+    completedTodos(state) {
+      return state.todos.filter(todo => {
+        return todo.status === 1;
+      });
+    },
+    incompleteTodos(state) {
+      return state.todos.filter(todo => {
+        return todo.status === 0;
+      });
+    }
+  }
 });
 
 Vue.prototype.$store = Store;
