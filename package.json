@@ -1,7 +1,7 @@
 {
-  "name": "first-mobile",
+  "name": "my-todo-app",
   "version": "1.0.0",
-  "description": "First app with both NativeScript and Vue",
+  "description": "Very Basic Todo App",
   "author": "Serere Jegede <sererejegede@gmail.com>",
   "license": "MIT",
   "scripts": {
