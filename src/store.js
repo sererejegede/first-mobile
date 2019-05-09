@@ -26,8 +26,11 @@ const Store = new Vuex.Store({
         db.execSQL('CREATE TABLE IF NOT EXISTS todos (' +
             'id INTEGER PRIMARY KEY AUTOINCREMENT,' +
             'name TEXT NOT NULL,' +
-            'status INTEGER NOT NULL DEFAULT 0' +
+            'status INTEGER NOT NULL DEFAULT 0,' +
+            'created_at INTEGER NOT NULL,' +
+            'completed_at INTEGER' +
             ')').then(id => {
+              console.log('Table created', id);
           store.commit('init', {database: db});
         }, error => {
           console.log('Create table error', error);
@@ -38,7 +41,7 @@ const Store = new Vuex.Store({
     },
 
     insert(store, data) {
-      store.state.database.execSQL('INSERT INTO todos (name) VALUES (?)', [data]).then(id => {
+      store.state.database.execSQL('INSERT INTO todos (name, created_at) VALUES (?, ?)', [data.name, data.created_at]).then(id => {
         console.log('Todo ID', id);
         store.commit('save', {id, data, status: 0});
       }, error => {
@@ -47,7 +50,7 @@ const Store = new Vuex.Store({
     },
 
     update(store, data) {
-      store.state.database.execSQL('UPDATE todos SET status = ? WHERE id = ?', [data.action, data.id]).then(response => {
+      store.state.database.execSQL('UPDATE todos SET status = ?, completed_at = ? WHERE id = ?', [data.action, data.completed_at, data.id]).then(response => {
         console.log('Update response', response);
       }, error => {
         console.log('Update error', error);
@@ -61,7 +64,9 @@ const Store = new Vuex.Store({
           refinedResult.push({
             id: result[0],
             name: result[1],
-            status: result[2]
+            status: result[2],
+            created_at: result[3],
+            completed_at: result[4]
           })
         });
         console.log(refinedResult);

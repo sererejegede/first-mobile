@@ -15,11 +15,12 @@
             <!-- <Button width="auto" text="Refresh" @tap="refresh" backgroundColor="orange" /> -->
           </WrapLayout>
           <ListView class="list-group" for="todo in activeTodos">
-            <v-template>
-              <FlexboxLayout flexDirection="row" class="list-group-item">
+            <v-template>na
+              <WrapLayout class="list-group-item">
                 <Label :text="todo.name" class="list-group-item-heading" @longPress="options(todo)" width=80% />
                 <Label :text="la.circle" class="icon line-awesome" @tap="markComplete(todo)" width=20% />
-              </FlexboxLayout>
+                <Label :text="todo.created_at | humanTime" class="list-group-item-text"/>
+              </WrapLayout>
             </v-template>
           </ListView>
         </StackLayout>

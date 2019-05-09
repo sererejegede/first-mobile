@@ -10,7 +10,7 @@
 <script>
   import Todo from './Todo/Todo.vue'
   export default {
-    name: 'Hello World',
+    name: 'Hello-World',
     data () {
       return {
 

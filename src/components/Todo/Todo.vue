@@ -1,6 +1,8 @@
 <template src="./Todo.html"></template>
 
 <script>
+  import moment from 'moment';
+
   export default {
     name: 'Todo',
     data() {
@@ -48,14 +50,17 @@
         });
       },
       addTodo() {
-        // this.todos.unshift(this.todo);
-        this.$store.dispatch('insert', this.todo).then(() => {
+        const data = {
+          name: this.todo,
+          created_at: Date.now()
+        };
+        this.$store.dispatch('insert', data).then(() => {
         this.refresh();
         });
         this.todo = '';
       },
       options(args) {
-        action(args.name, 'Cancel', ['Mark complete', 'Delete'])
+        action(args.name, 'Cancel', ['Delete'])
             .then(result => {
               switch (result) {
                 case 'Mark complete':
@@ -70,7 +75,7 @@
             })
       },
       reversal (args) {
-        action(args.name, 'Cancel', ['Mark as incomplete', 'Delete'])
+        action(args.name, 'Cancel', ['Delete'])
             .then(result => {
               switch (result) {
                 case 'Mark as incomplete':
@@ -86,11 +91,13 @@
       },
       markComplete(todo) {
         todo['action'] = 1;
+        todo['completed_at'] = Date.now();
         this.$store.dispatch('update', todo);
         this.refresh();
       },
       markIncomplete(todo) {
         todo['action'] = 0;
+        todo['completed_at'] = null;
         this.$store.dispatch('update', todo);
         this.refresh();
       },
