@@ -1,10 +1,13 @@
 <template>
-  <page>
-    <stack-layout class="home-panel">
-      <button class="m-30" width="50%" text="Open Todo App" @tap="openTodo" backgroundColor="orange" />
-      <Image src="~/images/NativeScript-Vue.png" stretch="none" />
-    </stack-layout>
-  </page>
+  <Page xlmn="http://schemas.nativescript.org/tns.xsd" class="right-gradient">
+    <FlexboxLayout flexDirection="row" justifyContent="center" alignItems="center">
+      <StackLayout class="home-panel">
+        <Button class="m-30" width="50%" text="Open Todo App" @tap="showImage = !showImage" backgroundColor="orange" />
+        <Image horizontalAlignment="center" v-if="showImage" src="~/images/NativeScript-Vue.png" stretch="none" />
+      </StackLayout>
+    </FlexboxLayout>
+
+  </Page>
 </template>
 
 <script>
@@ -13,7 +16,7 @@
     name: 'Hello-World',
     data () {
       return {
-
+        showImage: true
       }
     },
     methods: {
@@ -31,5 +34,9 @@
 
   Label {
     color: red;
+  }
+
+  .right-gradient {
+    background: linear-gradient(to right, orangered, green, lightblue);
   }
 </style>
